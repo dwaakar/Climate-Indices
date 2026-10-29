@@ -53,8 +53,8 @@
   styleFeature = function (f) {
     const p = f.properties, v = vis(p);
     const dark = document.documentElement.getAttribute("data-theme") === "dark";
-    if (v === "full") { const s = baseStyle(f); if (dark) s.color = s.weight > 2 ? "#ffffff" : "#8aa0ab"; return s; }
-    if (v === "ghost") return { fillColor: "#94a3b8", fillOpacity: dark ? 0.22 : 0.14, color: "#94a3b8", weight: 0.5, opacity: 0.7 };
+    if (v === "full") { const s = baseStyle(f); if (dark) s.color = s.weight > 2 ? "#ffffff" : "#8aa0ab"; s.fill = true; s.stroke = true; return s; }
+    if (v === "ghost") return { fill: true, stroke: true, fillColor: "#94a3b8", fillOpacity: dark ? 0.22 : 0.14, color: "#94a3b8", weight: 0.5, opacity: 0.7 };
     return { fill: false, stroke: false, fillOpacity: 0, opacity: 0 };
   };
 
@@ -201,7 +201,7 @@
   feats.forEach(f => { const k = norm(f.properties.name); dupCount[k] = (dupCount[k] || 0) + 1; });
   feats.forEach(f => {
     const p = f.properties;
-    entries.push({ t: "Local level", n: p.name, k: norm(p.name), sub: dname(p.district) + " district, " + p.prov_name, id: p.id, dup: dupCount[norm(p.name)] > 1, go: () => goPal(p.id) });
+    entries.push({ t: "Local level", n: p.name, k: norm(p.name), sub: dname(p.district) + " district, " + p.prov_name, id: p.id, type: p.type, dup: dupCount[norm(p.name)] > 1, go: () => goPal(p.id) });
   });
   const order = { Province: 0, District: 1, "Local level": 2 };
 
@@ -248,14 +248,19 @@
           box.appendChild(el("div", "search-empty", msg));
         } else {
           const dupNames = [...new Set(r.list.filter(e => e.dup).map(e => e.n))];
+          const kinds = {};
+          r.list.forEach(e => { (kinds[e.k] = kinds[e.k] || new Set()).add(e.t); });
+          const mixed = r.list.filter(e => kinds[e.k].size > 1);
+          const mixedNames = [...new Set(mixed.map(e => e.n))];
+          if (mixedNames.length) box.appendChild(el("div", "search-note", "Did you mean the district or the local level? " + mixedNames.map(n => "“" + n + "”").join(", ") + " is both. Pick the one you want from this list."));
           if (dupNames.length) {
             box.appendChild(el("div", "search-note", "⚠ More than one local level is named " + dupNames.map(n => "“" + n + "”").join(", ") + ". Please choose the right one from this list using the district shown below each name. Spelling can differ, so if yours is missing, try another spelling or search by district."));
             setHl(r.list.filter(e => e.dup).map(e => e.id));
           }
           r.list.forEach(e => {
-            const it = el("div", "search-item" + (e.dup ? " dup" : ""));
+            const it = el("div", "search-item" + (e.dup || kinds[e.k].size > 1 ? " dup" : ""));
             it.setAttribute("role", "option"); it.tabIndex = -1;
-            const b = el("strong", "", e.n); b.appendChild(el("span", "tag", e.t));
+            const b = el("strong", "", e.n + " (" + (e.t === "Local level" ? e.type : e.t) + ")");
             it.appendChild(b);
             if (e.sub) it.appendChild(el("span", "", e.sub)).style.cssText = "color:var(--muted);font-size:.8rem";
             it.onmousedown = ev => { ev.preventDefault(); pick(e); };
