@@ -740,8 +740,12 @@ button:hover,
   margin-top: 0.5rem;
 }
 
-canvas {
+/* Scoped to the chart only: a global canvas rule squashes Leaflet's polygon canvas to 0px wide */
+#tsCanvas {
   max-width: 100%;
+}
+.leaflet-container canvas {
+  max-width: none !important;
 }
 
 /* ==========================================================================
