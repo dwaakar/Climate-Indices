@@ -339,7 +339,7 @@ function styleFeature(feature) {
     weight: isSelected ? 2.8 : (inProv ? 0.6 : 0.2),
     opacity: 1,
     color: isSelected ? "#0f172a" : "#475569",
-    fillOpacity: inProv ? 0.9 : 0.12
+    fillOpacity: inProv ? 1.0 : 0.12
   };
 }
 
