@@ -63,6 +63,7 @@
     $("yearBar").classList.toggle("hidden", !on);
     document.body.classList.toggle("year-mode", on);
     if (!on && playing) stop();
+    if (window.map || typeof map !== "undefined") { setTimeout(() => { map.invalidateSize(); if (window.__refitIfNation) window.__refitIfNation(); }, 0); }
   }
   function label() { $("yearLabel").textContent = Y0 + Math.round(pos); $("yearSlider").value = pos; }
   function paint() {

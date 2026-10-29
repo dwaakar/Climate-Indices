@@ -94,10 +94,13 @@
     renderLevels();
     updateCount();
   }
+  // Fit all of Nepal into whatever space the map has, at any browser zoom or window size
+  function fitNepal() { map.options.zoomSnap = 0.25; map.invalidateSize(); map.fitBounds(geojsonLayer.getBounds(), { padding: [16, 16], animate: false }); }
+  window.__refitIfNation = () => { if (S.lvl === "nation") fitNepal(); };
   function goNation() {
     S.lvl = "nation"; S.prov = S.dist = S.pal = null;
     document.body.classList.remove("inspector-open");
-    map.setView([28.25, 84.15], innerWidth < 760 ? 6 : 7);
+    fitNepal();
     refresh();
   }
   function goProv(pid) {
@@ -391,5 +394,14 @@
     wireSearch(fresh, $("searchResults"), false, e => e.go());
     wireSearch($("cmpSearch"), $("cmpResults"), true, e => { if (!cmp.includes(e.id) && cmp.length < 5) toggleCmp(e.id); });
     refresh(); updateCmpBtn();
+    const lg = $("mapLegend");
+    if (innerHeight < 720) lg.classList.add("collapsed");
+    lg.addEventListener("click", e => { if (e.target.closest(".legend-title")) { lg.classList.toggle("collapsed"); } });
+    // legend: tap its title to collapse/expand; starts collapsed on small screens so it never hides the map
+    const leg = $("mapLegend");
+    if (innerWidth < 760 || innerHeight < 720) leg.classList.add("collapsed");
+    leg.addEventListener("click", e => { if (e.target.closest(".legend-title")) leg.classList.toggle("collapsed"); });
+    fitNepal();
+    let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { map.invalidateSize(); window.__refitIfNation(); }, 150); });
   });
 })();

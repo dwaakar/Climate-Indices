@@ -7,7 +7,7 @@
   <title>Nepal Climate Extremes Atlas (1995–2024)</title>
   <link rel="stylesheet" href="vendor/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
   <header class="topbar">
@@ -29,7 +29,7 @@
     <label>Local level <select id="palSel" disabled></select></label>
     <div class="crumbs" id="crumbs" aria-label="You are viewing"></div>
     <button id="resetMapBtn" class="btn-secondary" title="Zoom back out to all of Nepal">Reset to Nepal</button>
-    <button id="openCmp" class="btn-primary">Compare local levels (<span id="cmpCount">0</span>)</button>
+    <button id="openCmp" class="btn-primary">Compare <span class="hide-sm">local levels </span>(<span id="cmpCount">0</span>)</button>
   </nav>
   <select id="provinceFilter" hidden><option value="all">all</option></select>
 
@@ -73,8 +73,11 @@
     </aside>
 
     <main class="map-container">
+      <div class="map-stage">
       <div id="map"></div>
       <div id="mapLegend" class="map-legend"></div>
+      <div class="map-overlay-Banner" id="mapBanner">Click any area on the map to see its 30-year climate story.</div>
+    </div>
       <div id="yearBar" class="year-bar hidden" role="group" aria-label="Year slider">
         <button id="yearPlay" class="btn-primary">▶ Play</button>
         <div class="year-track">
@@ -84,7 +87,6 @@
         <div class="year-now" id="yearLabel" aria-live="polite">1995</div>
         <select id="yearSpeed" aria-label="Animation speed"><option value="0.7">Slow</option><option value="1.5" selected>Normal</option><option value="3">Fast</option></select>
       </div>
-      <div class="map-overlay-Banner" id="mapBanner">Click any area on the map to see its 30-year climate story.</div>
     </main>
 
     <aside class="right-panel" id="palikaInspector" aria-label="Selected municipality details">
@@ -158,7 +160,7 @@
   <script src="data/climate_timeseries_data.js"></script>
   <script src="data/admin_boundaries.js"></script>
   <script src="app.js?v=5"></script>
-  <script src="extras.js?v=8"></script>
-  <script src="timeline.js?v=7"></script>
+  <script src="extras.js?v=10"></script>
+  <script src="timeline.js?v=9"></script>
 </body>
 </html>
