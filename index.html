@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nepal Local-Level Climate Extremes Atlas (1995–2024)</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- TOP HEADER -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-badge">🇳🇵 NEPAL CLIMATE EXTREMES ATLAS</div>
+      <h1>30-Year Assessment of Precipitation & Temperature Extremes Across All 753 Local Levels (1995–2024)</h1>
+    </div>
+    <div class="header-controls">
+      <div class="search-box">
+        <input type="text" id="palikaSearch" placeholder="Search Palika or District (e.g., Pokhara, Taplejung)..." autocomplete="off" />
+        <div id="searchResults" class="search-dropdown hidden"></div>
+      </div>
+      <select id="provinceFilter" class="control-select">
+        <option value="all">All 7 Provinces (753 Palikas)</option>
+        <option value="1">Koshi Province</option>
+        <option value="2">Madhesh Province</option>
+        <option value="3">Bagmati Province</option>
+        <option value="4">Gandaki Province</option>
+        <option value="5">Lumbini Province</option>
+        <option value="6">Karnali Province</option>
+        <option value="7">Sudurpashchim Province</option>
+      </select>
+      <button id="resetMapBtn" class="btn-secondary" title="Reset Map View">Reset View</button>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="workspace">
+    <!-- LEFT SIDEBAR: INDEX SELECTOR & LAYMAN/POLICYMAKER GUIDE -->
+    <aside class="left-panel">
+      <div class="panel-section">
+        <div class="section-label">1. SELECT CLIMATE EXTREME INDEX</div>
+        <div class="index-category-tabs">
+          <button class="cat-tab active" data-cat="precip">🌧️ Precipitation (7)</button>
+          <button class="cat-tab" data-cat="temp">🌡️ Temperature (5)</button>
+        </div>
+        <div id="indexPills" class="index-pills"></div>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-label">2. MAP DISPLAY MODE</div>
+        <div class="mode-buttons">
+          <button class="mode-btn active" data-mode="mean">30-Yr Baseline Mean</button>
+          <button class="mode-btn" data-mode="slope">Trend Rate (Slope/yr)</button>
+          <button class="mode-btn" data-mode="sig">Significant Changes Only (p &lt; 0.05)</button>
+          <button class="mode-btn" data-mode="kmeans">Climate Regime Cluster (K-Means)</button>
+        </div>
+      </div>
+
+      <!-- LAYMAN & POLICYMAKER EXPLAINER CARD -->
+      <div class="panel-section explainer-card" id="indexExplainer">
+        <div class="explainer-header">
+          <span class="index-code-badge" id="expCode">PRCPTOT</span>
+          <span class="index-unit-badge" id="expUnit">mm / year</span>
+        </div>
+        <h2 id="expTitle">Total Annual Wet-Day Rainfall</h2>
+        <p class="exp-what" id="expWhat"></p>
+
+        <div class="meaning-grid">
+          <div class="meaning-box high-box">
+            <div class="meaning-title">📈 What a HIGH or INCREASING Value Means</div>
+            <p id="expHigh"></p>
+          </div>
+          <div class="meaning-box low-box">
+            <div class="meaning-title">📉 What a LOW or DECREASING Value Means</div>
+            <p id="expLow"></p>
+          </div>
+        </div>
+
+        <div class="policy-box">
+          <div class="policy-title">🏛️ Policy & Local Governance Takeaway</div>
+          <p id="expPolicy"></p>
+        </div>
+
+        <div class="national-stat-strip" id="natStatStrip"></div>
+      </div>
+    </aside>
+
+    <!-- CENTER: INTERACTIVE LEAFLET MAP -->
+    <main class="map-container">
+      <div id="map"></div>
+      <div id="mapLegend" class="map-legend"></div>
+      <div class="map-overlay-Banner" id="mapBanner">
+        Touch or click any Local Level (Palika) on the map to inspect its 30-year climate history, trend significance, and policy context.
+      </div>
+    </main>
+
+    <!-- RIGHT SIDEBAR: SELECTED PALIKA INSPECTOR -->
+    <aside class="right-panel" id="palikaInspector">
+      <div class="inspector-header">
+        <div>
+          <span class="palika-type-badge" id="inspType">Gaunpalika</span>
+          <span class="cluster-badge" id="inspCluster">Cluster 2: Wet Mid-Hill</span>
+        </div>
+        <h2 id="inspName">Aathrai Tribeni</h2>
+        <div class="palika-sub" id="inspSub">Taplejung District • Koshi Province • Area: 88.8 km²</div>
+      </div>
+
+      <!-- EXECUTIVE LAYMAN SUMMARY -->
+      <div class="exec-summary-card" id="inspPlainSummary"></div>
+
+      <!-- KEY METRIC CARDS FOR ACTIVE INDEX -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <span class="kpi-label">30-Yr Mean (1995–2024)</span>
+          <strong class="kpi-val" id="kpiMean">—</strong>
+          <span class="kpi-sub" id="kpiNatComp">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Annual Trend (Sen's Slope)</span>
+          <strong class="kpi-val" id="kpiSlope">—</strong>
+          <span class="kpi-sub" id="kpiDecade">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Statistical Significance</span>
+          <strong class="kpi-val" id="kpiSig">—</strong>
+          <span class="kpi-sub" id="kpiPval">—</span>
+        </div>
+      </div>
+
+      <!-- 30-YEAR TIME SERIES CHART -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3 id="chartTitle">30-Year Trajectory (1995–2024)</h3>
+          <label class="toggle-nat">
+            <input type="checkbox" id="showNatLine" checked />
+            <span>Show National Mean</span>
+          </label>
+        </div>
+        <canvas id="tsCanvas" width="420" height="210"></canvas>
+      </div>
+
+      <!-- ALL 12 INDICES TABLE FOR THIS PALIKA -->
+      <div class="all-indices-card">
+        <h3>All 12 Climate Extreme Indices in <span id="tablePalikaName">this Palika</span></h3>
+        <p class="table-hint">Click any row below to switch the map and chart to that index.</p>
+        <div class="table-scroll">
+          <table class="indices-table">
+            <thead>
+              <tr>
+                <th>Index</th>
+                <th>30-Yr Mean</th>
+                <th>Trend / yr</th>
+                <th>Status (p-val)</th>
+              </tr>
+            </thead>
+            <tbody id="palikaIndicesTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="data/palikas_climate_data.js"></script>
+  <script src="data/climate_timeseries_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
