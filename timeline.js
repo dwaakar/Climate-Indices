@@ -90,6 +90,16 @@
 
   window.addEventListener("DOMContentLoaded", () => {
     $("yearPlay").onclick = () => (playing ? stop() : play());
+    // the Year-by-year button in the top bar toggles the mode on and off
+    const yb = document.querySelector(".year-toggle");
+    yb.onclick = () => {
+      const turnOff = activeMode === "year";
+      activeMode = turnOff ? "mean" : "year";
+      document.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b.dataset.mode === activeMode));
+      yb.textContent = turnOff ? "▶ Year by year" : "■ Exit year view";
+      updateMapStyles();
+    };
+    document.querySelectorAll(".mode-btn:not(.year-toggle)").forEach(b => b.addEventListener("click", () => { yb.textContent = "▶ Year by year"; }));
     $("yearSlider").addEventListener("input", e => { if (playing) stop(); setPos(Number(e.target.value)); });
     $("yearSlider").addEventListener("change", e => setPos(Math.round(Number(e.target.value))));   // snap to a whole year on release
     document.addEventListener("keydown", e => {

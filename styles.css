@@ -294,3 +294,31 @@ body.inspector-open .year-bar{margin-right:min(420px,92vw)}
 @media (min-width:761px){.workspace{overflow:hidden}}
 @media (max-width:1500px) and (min-width:761px){.hide-sm{display:none}.crumbs{flex-basis:150px}.drill .btn-primary,.drill .btn-secondary{white-space:nowrap}.drill{flex-wrap:wrap}}
 @media (max-width:760px){.search-box,.search-box input{width:100%}.header-controls{display:block}}
+
+
+/* ===== v11: dynamic layout, legend that always fits, year button in top bar ===== */
+.workspace{grid-template-columns:clamp(260px,24vw,340px) 1fr}
+.map-legend{max-height:calc(100% - 28px);overflow-y:auto;max-width:min(270px,60%);background:rgba(255,255,255,.95)}
+.map-legend .legend-title{position:sticky;top:0}
+@media (max-height:760px) and (min-width:761px){
+  .map-legend{left:10px;bottom:10px;padding:.4rem .55rem;font-size:.7rem;max-width:min(230px,60%)}
+  .legend-title{font-size:.72rem;margin-bottom:.2rem}
+  .legend-row{margin:.08rem 0;gap:.4rem}
+  .legend-swatch{width:12px;height:12px}
+}
+.year-toggle{white-space:nowrap;border-color:var(--accent);color:var(--accent)}
+.year-toggle.active{background:var(--accent);color:#fff;box-shadow:none}
+.year-toggle b,.year-toggle small{display:inline}
+
+/* Phones: map stays pinned at the top, controls scroll underneath it */
+@media (max-width:760px){
+  .map-container{position:sticky;top:0;z-index:1000;height:46dvh;min-height:260px;max-height:420px;order:-1;box-shadow:0 4px 12px rgba(21,38,46,.18)}
+  body.year-mode .map-container{height:56dvh;max-height:500px}
+  .workspace{overflow:visible}
+  .left-panel{position:relative;z-index:1}
+  .drill .year-toggle{grid-column:1/-1}
+  .map-legend{max-width:62%}
+}
+@media (max-width:760px) and (orientation:landscape){
+  .map-container{height:70dvh;max-height:none}
+}

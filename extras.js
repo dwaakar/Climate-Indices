@@ -395,13 +395,12 @@
     wireSearch($("cmpSearch"), $("cmpResults"), true, e => { if (!cmp.includes(e.id) && cmp.length < 5) toggleCmp(e.id); });
     refresh(); updateCmpBtn();
     const lg = $("mapLegend");
-    if (innerHeight < 720) lg.classList.add("collapsed");
-    lg.addEventListener("click", e => { if (e.target.closest(".legend-title")) { lg.classList.toggle("collapsed"); } });
     // legend: tap its title to collapse/expand; starts collapsed on small screens so it never hides the map
     const leg = $("mapLegend");
-    if (innerWidth < 760 || innerHeight < 720) leg.classList.add("collapsed");
+    if (innerWidth < 760) leg.classList.add("collapsed");
     leg.addEventListener("click", e => { if (e.target.closest(".legend-title")) leg.classList.toggle("collapsed"); });
     fitNepal();
+    if (window.ResizeObserver) { let ro; new ResizeObserver(() => { clearTimeout(ro); ro = setTimeout(() => { map.invalidateSize(); window.__refitIfNation(); }, 120); }).observe($("map")); }
     let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { map.invalidateSize(); window.__refitIfNation(); }, 150); });
   });
 })();

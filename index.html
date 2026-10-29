@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Atlas of 30-year precipitation and temperature extremes across all 753 local levels of Nepal, based on Adhikari et al. (2026), International Journal of Climatology, doi:10.1002/joc.70575." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Atlas of 30-year precipitation and temperature extremes across all 753 local levels of Nepal, based on Adhikari and Baral (2026), International Journal of Climatology, doi:10.1002/joc.70575." />
   <title>Nepal Climate Extremes Atlas (1995–2024)</title>
   <link rel="stylesheet" href="vendor/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
   <header class="topbar">
@@ -28,6 +28,7 @@
     <label>District <select id="distSel" disabled></select></label>
     <label>Local level <select id="palSel" disabled></select></label>
     <div class="crumbs" id="crumbs" aria-label="You are viewing"></div>
+    <button class="mode-btn year-toggle btn-secondary" data-mode="year" title="Watch the map change year by year, 1995 to 2024">▶ Year by year</button>
     <button id="resetMapBtn" class="btn-secondary" title="Zoom back out to all of Nepal">Reset to Nepal</button>
     <button id="openCmp" class="btn-primary">Compare <span class="hide-sm">local levels </span>(<span id="cmpCount">0</span>)</button>
   </nav>
@@ -50,7 +51,6 @@
           <button class="mode-btn active" data-mode="mean"><b>Typical level</b><small>Average over 30 years</small></button>
           <button class="mode-btn" data-mode="slope"><b>Speed of change</b><small>How fast it is rising or falling each year</small></button>
           <button class="mode-btn" data-mode="sig"><b>Clear changes only</b><small>Green = rising, red = falling, grey = no clear change</small></button>
-          <button class="mode-btn" data-mode="year"><b>Year by year</b><small>Watch it change from 1995 to 2024</small></button>
           <button class="mode-btn" data-mode="kmeans"><b>Similar climates</b><small>Groups places that behave alike</small></button>
         </div>
       </section>
@@ -129,7 +129,7 @@
   </div>
 
   <footer class="site-foot">
-    <span>Based on <a href="https://doi.org/10.1002/joc.70575" target="_blank" rel="noopener">Adhikari et al. (2026), <em>International Journal of Climatology</em></a>.</span>
+    <span>Based on <a href="https://doi.org/10.1002/joc.70575" target="_blank" rel="noopener">Adhikari and Baral (2026), <em>International Journal of Climatology</em></a>.</span>
     <button id="openCite" class="link-btn">How to cite</button>
   </footer>
 
@@ -137,7 +137,7 @@
     <div class="modal-box cite-box">
       <div class="modal-head"><h2>About this atlas and how to cite it</h2><button id="citeClose" class="close-btn static" aria-label="Close">✕</button></div>
       <p>This atlas is based on findings from:</p>
-      <blockquote id="citeText">Adhikari et al. (2026), A 30-Year Assessment of Temperature and Precipitation Indices across Local Levels of Nepal, <em>International Journal of Climatology</em>. DOI: <a href="https://doi.org/10.1002/joc.70575" target="_blank" rel="noopener">https://doi.org/10.1002/joc.70575</a></blockquote>
+      <blockquote id="citeText">Adhikari and Baral (2026), A 30-Year Assessment of Temperature and Precipitation Indices across Local Levels of Nepal, <em>International Journal of Climatology</em>. DOI: <a href="https://doi.org/10.1002/joc.70575" target="_blank" rel="noopener">https://doi.org/10.1002/joc.70575</a></blockquote>
       <p>If you use this atlas in research, reports, or planning documents, please cite the associated publication.</p>
       <div class="cite-actions"><button id="copyCite" class="btn-primary">Copy citation</button><span id="copyMsg" class="copy-msg" role="status"></span></div>
     </div>
@@ -159,8 +159,8 @@
   <script src="data/palikas_climate_data.js"></script>
   <script src="data/climate_timeseries_data.js"></script>
   <script src="data/admin_boundaries.js"></script>
-  <script src="app.js?v=5"></script>
-  <script src="extras.js?v=10"></script>
-  <script src="timeline.js?v=9"></script>
+  <script src="app.js?v=6"></script>
+  <script src="extras.js?v=11"></script>
+  <script src="timeline.js?v=10"></script>
 </body>
 </html>

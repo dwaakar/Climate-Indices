@@ -269,8 +269,8 @@ function interpolateColor(hex1, hex2, factor) {
 
 function initMap() {
   map = L.map("map", { preferCanvas: true }).setView([28.25, 84.15], 7);
-  // Basemaps that need no API key. "No basemap" is the default so the choropleth
-  // always renders cleanly, even offline or if a tile server is down.
+  // Basemaps that need no API key. OpenStreetMap is on by default; "No basemap" is
+  // still available in the layer switcher for a clean choropleth or offline use.
   const noBase = L.layerGroup();
   const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"
@@ -278,7 +278,7 @@ function initMap() {
   const topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
     maxZoom: 17, attribution: "&copy; OpenStreetMap contributors, SRTM | &copy; OpenTopoMap (CC-BY-SA)"
   });
-  noBase.addTo(map);
+  osm.addTo(map);   // OpenStreetMap is the default background
   L.control.layers({ "No basemap": noBase, "OpenStreetMap": osm, "Terrain (OpenTopoMap)": topo }, null, { position: "topright" }).addTo(map);
 
   geojsonLayer = L.geoJSON(geoData, {
@@ -323,7 +323,7 @@ function styleFeature(feature) {
     weight: isSelected ? 2.8 : (inProv ? 0.6 : 0.2),
     opacity: 1,
     color: isSelected ? "#0f172a" : "#475569",
-    fillOpacity: inProv ? 0.85 : 0.12
+    fillOpacity: inProv ? 0.78 : 0.12
   };
 }
 
