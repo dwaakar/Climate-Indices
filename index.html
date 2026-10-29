@@ -6,7 +6,7 @@
   <title>Nepal Climate Extremes Atlas (1995–2024)</title>
   <link rel="stylesheet" href="vendor/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
   <header class="topbar">
@@ -19,7 +19,6 @@
         <input type="text" id="palikaSearch" maxlength="60" placeholder="Search a province, district or local level" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="searchResults" aria-label="Search province, district or local level" />
         <div id="searchResults" class="search-dropdown hidden" role="listbox"></div>
       </div>
-      <button id="themeBtn" class="btn-secondary" aria-label="Switch between light and dark mode"></button>
     </div>
   </header>
 
@@ -50,6 +49,7 @@
           <button class="mode-btn active" data-mode="mean"><b>Typical level</b><small>Average over 30 years</small></button>
           <button class="mode-btn" data-mode="slope"><b>Speed of change</b><small>How fast it is rising or falling each year</small></button>
           <button class="mode-btn" data-mode="sig"><b>Clear changes only</b><small>Green = rising, red = falling, grey = no clear change</small></button>
+          <button class="mode-btn" data-mode="year"><b>Year by year</b><small>Watch it change from 1995 to 2024</small></button>
           <button class="mode-btn" data-mode="kmeans"><b>Similar climates</b><small>Groups places that behave alike</small></button>
         </div>
       </section>
@@ -74,6 +74,15 @@
     <main class="map-container">
       <div id="map"></div>
       <div id="mapLegend" class="map-legend"></div>
+      <div id="yearBar" class="year-bar hidden" role="group" aria-label="Year slider">
+        <button id="yearPlay" class="btn-primary">▶ Play</button>
+        <div class="year-track">
+          <input type="range" id="yearSlider" min="0" max="29" step="0.01" value="0" aria-label="Year" />
+          <div class="year-ticks"><span>1995</span><span>2000</span><span>2005</span><span>2010</span><span>2015</span><span>2020</span><span>2024</span></div>
+        </div>
+        <div class="year-now" id="yearLabel" aria-live="polite">1995</div>
+        <select id="yearSpeed" aria-label="Animation speed"><option value="0.7">Slow</option><option value="1.5" selected>Normal</option><option value="3">Fast</option></select>
+      </div>
       <div class="map-overlay-Banner" id="mapBanner">Click any area on the map to see its 30-year climate story.</div>
     </main>
 
@@ -133,6 +142,7 @@
   <script src="data/climate_timeseries_data.js"></script>
   <script src="data/admin_boundaries.js"></script>
   <script src="app.js?v=5"></script>
-  <script src="extras.js?v=6"></script>
+  <script src="extras.js?v=7"></script>
+  <script src="timeline.js?v=7"></script>
 </body>
 </html>

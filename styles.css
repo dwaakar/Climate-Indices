@@ -138,15 +138,6 @@ body.inspector-open .right-panel{transform:none;visibility:visible}
 }
 @media (prefers-reduced-motion:reduce){.right-panel{transition:none}}
 
-/* Dark mode */
-[data-theme="dark"]{--ink:#e7eff2;--muted:#9fb2ba;--line:#2d414b;--page:#0e181d;--card:#15232a;--accent:#63b8d9;--accent-soft:#18343f;--up:#4ade80;--down:#f87171;--banner:#0b1317;--code:#2a4553;color-scheme:dark}
-[data-theme="dark"] #map,[data-theme="dark"] .map-container{background:#0b1317}
-[data-theme="dark"] .high-box{background:#14291d}[data-theme="dark"] .low-box{background:#2d1717}
-[data-theme="dark"] .sig-up{background:#14341f}[data-theme="dark"] .sig-down{background:#3a1b1b}
-[data-theme="dark"] .chart-card canvas,[data-theme="dark"] #cmpCanvas{background:#f8fafc;border-radius:8px}
-[data-theme="dark"] .cat-tab.active{background:var(--accent-soft)}
-[data-theme="dark"] .legend-swatch{border-color:rgba(255,255,255,.25)}
-
 /* Drill-down bar */
 .drill{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;padding:.55rem 1.25rem;background:var(--card);border-bottom:1px solid var(--line);z-index:1150;position:relative}
 .drill label{display:flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:600;color:var(--muted)}
@@ -156,8 +147,7 @@ body.inspector-open .right-panel{transform:none;visibility:visible}
 .crumbs button{border:0;background:none;color:var(--accent);cursor:pointer;font-weight:600;padding:.1rem .2rem;border-radius:4px}
 .crumbs button:hover{text-decoration:underline}
 .crumbs .here{color:var(--ink);font-weight:700;padding:.1rem .2rem}
-.btn-primary{padding:.5rem .9rem;border:0;border-radius:8px;background:var(--accent);color:#08212b;font-weight:700;cursor:pointer}
-[data-theme="light"] .btn-primary,:root:not([data-theme]) .btn-primary{color:#fff}
+.btn-primary{padding:.5rem .9rem;border:0;border-radius:8px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
 .btn-primary:hover{filter:brightness(1.08)}
 .search-box input{width:340px}
 .search-item{display:block}
@@ -165,7 +155,6 @@ body.inspector-open .right-panel{transform:none;visibility:visible}
 .search-item.active,.search-item:focus{background:var(--accent-soft);outline:none}
 .search-item.dup{border-left:4px solid #f59e0b}
 .search-note{padding:.6rem .8rem;font-size:.82rem;background:#fff7e0;color:#5b3d00;border-bottom:1px solid var(--line)}
-[data-theme="dark"] .search-note{background:#3a2c0a;color:#ffd98a}
 .search-empty{padding:.7rem .8rem;font-size:.85rem;color:var(--muted)}
 
 /* Drawer extras */
@@ -201,3 +190,19 @@ body.inspector-open .right-panel{transform:none;visibility:visible}
 .crumbs{flex:1 0 100%;order:10;font-size:.82rem;min-width:0}
 .crumbs span:not(.here){white-space:nowrap}
 .drill{padding:.5rem 1.25rem .4rem}
+
+/* Year slider */
+.year-bar{position:absolute;left:300px;right:14px;bottom:14px;z-index:900;display:flex;align-items:center;gap:.9rem;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:.6rem .9rem;box-shadow:0 4px 14px rgba(21,38,46,.15)}
+body.inspector-open .year-bar{right:434px}
+.year-bar .btn-primary{min-width:5.6rem}
+.year-track{flex:1;min-width:0}
+.year-track input{width:100%;accent-color:var(--accent);margin:0;cursor:pointer}
+.year-ticks{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-top:.1rem}
+.year-now{font-size:1.5rem;font-weight:700;min-width:4.4rem;text-align:center;font-variant-numeric:tabular-nums}
+.year-bar select{padding:.35rem .4rem;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+body.year-mode .map-overlay-Banner{display:none}
+@media (max-width:760px){.year-bar{left:14px;gap:.5rem;padding:.5rem .6rem}.year-now{font-size:1.15rem;min-width:3.3rem}.year-bar .btn-primary{min-width:0;padding:.45rem .6rem}body.inspector-open .year-bar{right:14px}
+  .year-bar{flex-wrap:wrap}.year-track{order:5;flex:1 0 100%}
+  .year-ticks span:not(:first-child):not(:last-child){display:none}
+  body.year-mode .map-legend{bottom:112px;padding:.4rem .55rem;font-size:.66rem;max-width:150px}body.year-mode .legend-title{font-size:.68rem}
+  .year-bar .btn-primary{margin-right:auto}}

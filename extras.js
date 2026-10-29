@@ -52,7 +52,7 @@
   const baseStyle = styleFeature;
   styleFeature = function (f) {
     const p = f.properties, v = vis(p);
-    const dark = document.documentElement.getAttribute("data-theme") === "dark";
+    const dark = false;
     if (v === "full") { const s = baseStyle(f); if (dark) s.color = s.weight > 2 ? "#ffffff" : "#8aa0ab"; s.fill = true; s.stroke = true; return s; }
     if (v === "ghost") return { fill: true, stroke: true, fillColor: "#94a3b8", fillOpacity: dark ? 0.22 : 0.14, color: "#94a3b8", weight: 0.5, opacity: 0.7 };
     return { fill: false, stroke: false, fillOpacity: 0, opacity: 0 };
@@ -127,7 +127,7 @@
   };
 
   /* ---------- outlines (province / district borders) ---------- */
-  const ink = () => (document.documentElement.getAttribute("data-theme") === "dark" ? "#e2e8f0" : "#0f172a");
+  const ink = () => "#0f172a";
   const provStyle = f => {
     const on = S.lvl === "nation" || f.properties.id === S.prov;
     return { fill: false, color: ink(), weight: on ? 2.2 : 0, opacity: on ? 0.85 : 0, interactive: false };
@@ -358,21 +358,6 @@
     $("cmpClose").focus();
   }
 
-  /* ---------- theme ---------- */
-  function setTheme(t, save) {
-    document.documentElement.setAttribute("data-theme", t);
-    $("themeBtn").textContent = t === "dark" ? "☀ Light mode" : "☾ Dark mode";
-    if (save) { try { localStorage.setItem("atlas-theme", t); } catch (e) {} }
-    try { drawTimeSeriesChart(selectedPalikaId, activeIndex); } catch (e) {}
-    try { refresh(); } catch (e) {}
-  }
-  (function initTheme() {
-    let t = null;
-    try { t = localStorage.getItem("atlas-theme"); } catch (e) {}
-    if (t !== "dark" && t !== "light") t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    document.documentElement.setAttribute("data-theme", t);
-  })();
-
   /* ---------- init ---------- */
   window.addEventListener("DOMContentLoaded", () => {
     geojsonLayer.eachLayer(l => (layerById[l.feature.properties.id] = l));
@@ -394,8 +379,6 @@
     old.replaceWith(fresh);
     wireSearch(fresh, $("searchResults"), false, e => e.go());
     wireSearch($("cmpSearch"), $("cmpResults"), true, e => { if (!cmp.includes(e.id) && cmp.length < 5) toggleCmp(e.id); });
-    $("themeBtn").onclick = () => setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark", true);
-    setTheme(document.documentElement.getAttribute("data-theme"), false);
     refresh(); updateCmpBtn();
   });
 })();
