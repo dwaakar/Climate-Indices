@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Atlas of 30-year precipitation and temperature extremes across all 753 local levels of Nepal, based on Adhikari et al. (2026), International Journal of Climatology, doi:10.1002/joc.70575." />
   <title>Nepal Climate Extremes Atlas (1995–2024)</title>
   <link rel="stylesheet" href="vendor/leaflet.css" />
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <link rel="stylesheet" href="styles.css?v=8" />
 </head>
 <body>
   <header class="topbar">
@@ -125,6 +126,21 @@
     </aside>
   </div>
 
+  <footer class="site-foot">
+    <span>Based on <a href="https://doi.org/10.1002/joc.70575" target="_blank" rel="noopener">Adhikari et al. (2026), <em>International Journal of Climatology</em></a>.</span>
+    <button id="openCite" class="link-btn">How to cite</button>
+  </footer>
+
+  <div id="citeModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="How to cite this atlas">
+    <div class="modal-box cite-box">
+      <div class="modal-head"><h2>About this atlas and how to cite it</h2><button id="citeClose" class="close-btn static" aria-label="Close">✕</button></div>
+      <p>This atlas is based on findings from:</p>
+      <blockquote id="citeText">Adhikari et al. (2026), A 30-Year Assessment of Temperature and Precipitation Indices across Local Levels of Nepal, <em>International Journal of Climatology</em>. DOI: <a href="https://doi.org/10.1002/joc.70575" target="_blank" rel="noopener">https://doi.org/10.1002/joc.70575</a></blockquote>
+      <p>If you use this atlas in research, reports, or planning documents, please cite the associated publication.</p>
+      <div class="cite-actions"><button id="copyCite" class="btn-primary">Copy citation</button><span id="copyMsg" class="copy-msg" role="status"></span></div>
+    </div>
+  </div>
+
   <div id="cmpModal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Compare local levels">
     <div class="modal-box">
       <div class="modal-head"><h2>Compare up to 5 local levels</h2><button id="cmpClose" class="close-btn static" aria-label="Close comparison">✕</button></div>
@@ -142,7 +158,7 @@
   <script src="data/climate_timeseries_data.js"></script>
   <script src="data/admin_boundaries.js"></script>
   <script src="app.js?v=5"></script>
-  <script src="extras.js?v=7"></script>
+  <script src="extras.js?v=8"></script>
   <script src="timeline.js?v=7"></script>
 </body>
 </html>

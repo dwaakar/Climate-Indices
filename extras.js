@@ -371,6 +371,17 @@
     $("cmpClose").onclick = () => $("cmpModal").classList.add("hidden");
     $("cmpModal").addEventListener("keydown", e => { if (e.key === "Escape") $("cmpModal").classList.add("hidden"); });
     $("addCmpBtn").onclick = () => toggleCmp(selectedPalikaId);
+    const cite = $("citeModal");
+    $("openCite").onclick = () => { cite.classList.remove("hidden"); $("citeClose").focus(); };
+    $("citeClose").onclick = () => { cite.classList.add("hidden"); $("openCite").focus(); };
+    cite.addEventListener("keydown", e => { if (e.key === "Escape") cite.classList.add("hidden"); });
+    cite.addEventListener("click", e => { if (e.target === cite) cite.classList.add("hidden"); });
+    $("copyCite").onclick = () => {
+      const txt = $("citeText").textContent.trim() + " If you use this atlas in research, reports, or planning documents, please cite the associated publication.";
+      const done = ok => { $("copyMsg").textContent = ok ? "Copied" : "Press Ctrl+C to copy the highlighted text"; setTimeout(() => ($("copyMsg").textContent = ""), 2500); };
+      try { navigator.clipboard.writeText(txt).then(() => done(true), () => { window.getSelection().selectAllChildren($("citeText")); done(false); }); }
+      catch (err) { window.getSelection().selectAllChildren($("citeText")); done(false); }
+    };
     fill($("cmpIndex"), "", Object.values(INDEX_KB).map(i => [i.code, i.name + " (" + i.code + ")"]), activeIndex);
     $("cmpIndex").remove(0); cmpIdx = activeIndex; $("cmpIndex").value = cmpIdx;
     $("cmpIndex").onchange = e => { cmpIdx = e.target.value; renderCmp(); };

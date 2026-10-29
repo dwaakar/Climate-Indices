@@ -206,3 +206,14 @@ body.year-mode .map-overlay-Banner{display:none}
   .year-ticks span:not(:first-child):not(:last-child){display:none}
   body.year-mode .map-legend{bottom:112px;padding:.4rem .55rem;font-size:.66rem;max-width:150px}body.year-mode .legend-title{font-size:.68rem}
   .year-bar .btn-primary{margin-right:auto}}
+
+/* Attribution footer and citation window */
+.site-foot{flex:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.3rem .9rem;padding:.4rem 1rem;background:var(--card);border-top:1px solid var(--line);font-size:.78rem;color:var(--muted);z-index:1150;position:relative}
+.site-foot a,.cite-box a{color:var(--accent);font-weight:600}
+.link-btn{border:0;background:none;color:var(--accent);font-weight:700;cursor:pointer;text-decoration:underline;padding:.1rem .2rem;font-size:inherit}
+.cite-box{width:min(620px,100%)}
+.cite-box p{margin:.6rem 0}
+.cite-box blockquote{margin:.8rem 0;padding:.8rem 1rem;background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;line-height:1.55;word-break:break-word}
+.cite-actions{display:flex;align-items:center;gap:.8rem;margin-top:1rem}
+.copy-msg{font-size:.85rem;color:var(--up);font-weight:600}
+@media (max-width:760px){.site-foot{justify-content:flex-start}}
