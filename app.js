@@ -173,7 +173,7 @@ function renderIndexPills() {
     .forEach(item => {
       const btn = document.createElement("button");
       btn.className = "index-pill" + (item.code === activeIndex ? " active" : "");
-      btn.innerHTML = `<span>${item.code}</span>`;
+      btn.innerHTML = `<b>${item.name}</b><small>${item.code}</small>`;
       btn.title = item.name;
       btn.onclick = () => {
         activeIndex = item.code;
@@ -286,6 +286,7 @@ function initMap() {
     onEachFeature: (feature, layer) => {
       layer.on({
         mouseover: e => {
+          if (window.__hidden && window.__hidden(feature.properties)) return;
           const l = e.target;
           l.setStyle({ weight: 2.2, color: "#0f172a" });
           const p = feature.properties;
@@ -303,6 +304,7 @@ function initMap() {
           geojsonLayer.resetStyle(e.target);
         },
         click: () => {
+          if (window.__hidden && window.__hidden(feature.properties)) return;
           selectPalika(feature.properties.id, true);
         }
       });
@@ -400,7 +402,7 @@ function selectPalika(pid, zoomTo = false) {
     : `Over the past 30 years (1995–2024), <strong>${info.code}</strong> in <strong>${p.name}</strong> has fluctuated around its baseline with <strong>no statistically significant long-term trend</strong> (slope: ${tr.slope >= 0 ? "+" : ""}${tr.slope} ${info.slopeUnit}, <em>p = ${tr.p}</em>).`;
 
   document.getElementById("inspPlainSummary").innerHTML =
-    `<strong>Layman & Policy Context for ${p.name}:</strong> Its 30-year average ${info.name.toLowerCase()} is <strong>${meanVal} ${info.unit}</strong> (${compWord} the national average of ${natMean.toFixed(1)} ${info.unit}). ${sigSentence}`;
+    `<strong>In plain words, for ${p.name}:</strong> Its 30-year average ${info.name.toLowerCase()} is <strong>${meanVal} ${info.unit}</strong> (${compWord} the national average of ${natMean.toFixed(1)} ${info.unit}). ${sigSentence}`;
 
   // KPI cards
   document.getElementById("kpiMean").textContent = `${meanVal} ${info.unit}`;
@@ -689,4 +691,14 @@ function setupEventListeners() {
   });
 }
 
-window.addEventListener("DOMContentLoaded", initApp);
+// Open the details drawer only when the person picks an area (click or search)
+const _selectPalika = selectPalika;
+selectPalika = function (id, zoomTo) {
+  _selectPalika(id, zoomTo);
+  if (zoomTo) document.body.classList.add("inspector-open");
+};
+window.addEventListener("DOMContentLoaded", () => {
+  initApp();
+  if (window.innerWidth < 760) map.setView([28.3, 84.1], 6);
+  document.getElementById("closeInspector").onclick = () => document.body.classList.remove("inspector-open");
+});
