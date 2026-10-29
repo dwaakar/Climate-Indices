@@ -269,17 +269,33 @@ function interpolateColor(hex1, hex2, factor) {
 
 function initMap() {
   map = L.map("map", { preferCanvas: true }).setView([28.25, 84.15], 7);
-  // Basemaps that need no API key. OpenStreetMap is on by default; "No basemap" is
-  // still available in the layer switcher for a clean choropleth or offline use.
+  // Basemaps that need no API key. The default is a quiet, label-free light map, so
+  // no place names or borders from the tiles show through the coloured areas.
+  // OpenStreetMap and Terrain are still in the layer switcher; "Place names" is an
+  // optional overlay drawn ABOVE the coloured areas so it stays readable.
   const noBase = L.layerGroup();
+  const clean = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
+    subdomains: "abcd", maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
+  });
   const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"
   });
   const topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
     maxZoom: 17, attribution: "&copy; OpenStreetMap contributors, SRTM | &copy; OpenTopoMap (CC-BY-SA)"
   });
-  osm.addTo(map);   // OpenStreetMap is the default background
-  L.control.layers({ "No basemap": noBase, "OpenStreetMap": osm, "Terrain (OpenTopoMap)": topo }, null, { position: "topright" }).addTo(map);
+  map.createPane("labelsPane");
+  map.getPane("labelsPane").style.zIndex = 650;          // above the coloured areas (overlayPane = 400)
+  map.getPane("labelsPane").style.pointerEvents = "none"; // never blocks hover or clicks
+  const names = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png", {
+    subdomains: "abcd", maxZoom: 19, pane: "labelsPane"
+  });
+  clean.addTo(map);
+  L.control.layers(
+    { "Clean light (default)": clean, "OpenStreetMap": osm, "Terrain (OpenTopoMap)": topo, "No basemap": noBase },
+    { "Place names": names },
+    { position: "topright" }
+  ).addTo(map);
 
   geojsonLayer = L.geoJSON(geoData, {
     style: styleFeature,
@@ -323,7 +339,7 @@ function styleFeature(feature) {
     weight: isSelected ? 2.8 : (inProv ? 0.6 : 0.2),
     opacity: 1,
     color: isSelected ? "#0f172a" : "#475569",
-    fillOpacity: inProv ? 0.78 : 0.12
+    fillOpacity: inProv ? 0.9 : 0.12
   };
 }
 
