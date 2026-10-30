@@ -1,6 +1,6 @@
 :root{
   --ink:#15262e; --muted:#566871; --line:#d9e2e6; --page:#f1f5f6; --card:#fff;
-  --accent:#1b6b8a; --accent-soft:#e3f1f6; --up:#15803d; --down:#b91c1c;
+  --accent:#1b6b8a; --accent-soft:#e3f1f6; --up:#1b3a9e; --down:#a14f00;
   --r:10px;--banner:#15262e;--code:#15262e; --head:64px;
 }
 *{box-sizing:border-box}
@@ -64,8 +64,8 @@ button,select,input{font:inherit;color:inherit}
 .more summary{cursor:pointer;font-weight:600;color:var(--accent);font-size:.9rem;padding:.3rem 0}
 .meaning-box,.policy-box{margin-top:.6rem;padding:.7rem .8rem;border-radius:8px;border-left:4px solid var(--line);font-size:.86rem}
 .meaning-box h3,.policy-box h3{font-size:.85rem;margin-bottom:.2rem}
-.high-box{background:#eef7f0;border-color:var(--up)}
-.low-box{background:#fdf0f0;border-color:var(--down)}
+.high-box{background:#eaf0fd;border-color:var(--up)}
+.low-box{background:#fdf1e0;border-color:var(--down)}
 .policy-box{background:var(--accent-soft);border-color:var(--accent)}
 
 /* Map */
@@ -112,8 +112,8 @@ body.inspector-open .right-panel{transform:none;visibility:visible}
 .indices-table tbody tr:hover{background:var(--page)}
 .indices-table tr.active-row{background:var(--accent-soft);font-weight:600}
 .badge-sig{display:inline-block;padding:.05rem .45rem;border-radius:99px;font-size:.72rem;font-weight:600;white-space:nowrap}
-.sig-up{background:#dcfce7;color:var(--up)}
-.sig-down{background:#fee2e2;color:var(--down)}
+.sig-up{background:#dfe8fb;color:var(--up)}
+.sig-down{background:#fdebd2;color:var(--down)}
 .sig-none{background:var(--page);color:var(--muted)}
 
 /* Tablet & phone */
@@ -122,7 +122,7 @@ body.inspector-open .right-panel{transform:none;visibility:visible}
   .search-box input{width:200px}
   .workspace{grid-template-columns:300px 1fr}
 }
-@media (max-width:760px){
+@media (max-width:760px), (max-height:520px){
   body{overflow:auto;height:auto}
   .topbar{height:auto;flex-direction:column;align-items:stretch;padding:.7rem 1rem}
   .header-controls{flex-wrap:wrap}
@@ -185,7 +185,7 @@ body.inspector-open .right-panel{transform:none;visibility:visible}
 .cmp-table th{text-align:left;color:var(--muted);font-weight:600;padding:.45rem .5rem;border-bottom:1px solid var(--line)}
 .cmp-table td{padding:.55rem .5rem;border-bottom:1px solid var(--line);vertical-align:middle}
 .bar{height:6px;border-radius:3px;margin-top:.25rem}
-@media (max-width:760px){.search-box input,.cmp-controls .search-box input{width:100%}.drill select{max-width:140px}}
+@media (max-width:760px), (max-height:520px){.search-box input,.cmp-controls .search-box input{width:100%}.drill select{max-width:140px}}
 
 .crumbs{flex:1 0 100%;order:10;font-size:.82rem;min-width:0}
 .crumbs span:not(.here){white-space:nowrap}
@@ -201,7 +201,7 @@ body.inspector-open .year-bar{right:434px}
 .year-now{font-size:1.5rem;font-weight:700;min-width:4.4rem;text-align:center;font-variant-numeric:tabular-nums}
 .year-bar select{padding:.35rem .4rem;border:1px solid var(--line);border-radius:8px;background:var(--card)}
 body.year-mode .map-overlay-Banner{display:none}
-@media (max-width:760px){.year-bar{left:14px;gap:.5rem;padding:.5rem .6rem}.year-now{font-size:1.15rem;min-width:3.3rem}.year-bar .btn-primary{min-width:0;padding:.45rem .6rem}body.inspector-open .year-bar{right:14px}
+@media (max-width:760px), (max-height:520px){.year-bar{left:14px;gap:.5rem;padding:.5rem .6rem}.year-now{font-size:1.15rem;min-width:3.3rem}.year-bar .btn-primary{min-width:0;padding:.45rem .6rem}body.inspector-open .year-bar{right:14px}
   .year-bar{flex-wrap:wrap}.year-track{order:5;flex:1 0 100%}
   .year-ticks span:not(:first-child):not(:last-child){display:none}
   body.year-mode .map-legend{bottom:112px;padding:.4rem .55rem;font-size:.66rem;max-width:150px}body.year-mode .legend-title{font-size:.68rem}
@@ -216,14 +216,14 @@ body.year-mode .map-overlay-Banner{display:none}
 .cite-box blockquote{margin:.8rem 0;padding:.8rem 1rem;background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;line-height:1.55;word-break:break-word}
 .cite-actions{display:flex;align-items:center;gap:.8rem;margin-top:1rem}
 .copy-msg{font-size:.85rem;color:var(--up);font-weight:600}
-@media (max-width:760px){.site-foot{justify-content:flex-start}}
+@media (max-width:760px), (max-height:520px){.site-foot{justify-content:flex-start}}
 
 /* Year bar sits UNDER the map (never on top of it), so it can't hide any area at any zoom level */
 .map-container{display:flex;flex-direction:column}
 .map-stage{position:relative;flex:1;min-height:0}
 .year-bar{position:static;left:auto;right:auto;bottom:auto;flex:none;border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none;padding:.55rem 1rem}
 body.inspector-open .year-bar{right:auto;margin-right:420px}
-@media (max-width:760px){
+@media (max-width:760px), (max-height:520px){
   .year-bar{left:auto;margin-right:0!important}
   body.year-mode .map-legend{bottom:14px}
 }
@@ -269,7 +269,7 @@ body.inspector-open .year-bar{margin-right:min(420px,92vw)}
 }
 
 /* Phones */
-@media (max-width:760px){
+@media (max-width:760px), (max-height:520px){
   html,body{height:auto}
   body{height:auto;min-height:100dvh;overflow:auto}
   .topbar{padding:.6rem .9rem;gap:.5rem}
@@ -293,7 +293,7 @@ body.inspector-open .year-bar{margin-right:min(420px,92vw)}
 }
 @media (min-width:761px){.workspace{overflow:hidden}}
 @media (max-width:1500px) and (min-width:761px){.hide-sm{display:none}.crumbs{flex-basis:150px}.drill .btn-primary,.drill .btn-secondary{white-space:nowrap}.drill{flex-wrap:wrap}}
-@media (max-width:760px){.search-box,.search-box input{width:100%}.header-controls{display:block}}
+@media (max-width:760px), (max-height:520px){.search-box,.search-box input{width:100%}.header-controls{display:block}}
 
 
 /* ===== v11: dynamic layout, legend that always fits, year button in top bar ===== */
@@ -311,7 +311,7 @@ body.inspector-open .year-bar{margin-right:min(420px,92vw)}
 .year-toggle b,.year-toggle small{display:inline}
 
 /* Phones: map stays pinned at the top, controls scroll underneath it */
-@media (max-width:760px){
+@media (max-width:760px), (max-height:520px){
   .map-container{position:sticky;top:0;z-index:1000;height:46dvh;min-height:260px;max-height:420px;order:-1;box-shadow:0 4px 12px rgba(21,38,46,.18)}
   body.year-mode .map-container{height:56dvh;max-height:500px}
   .workspace{overflow:visible}
@@ -321,4 +321,13 @@ body.inspector-open .year-bar{margin-right:min(420px,92vw)}
 }
 @media (max-width:760px) and (orientation:landscape){
   .map-container{height:70dvh;max-height:none}
+}
+
+.chip i{display:inline-grid;place-items:center;width:1.15rem;height:1.15rem;color:#fff;font-size:.68rem;font-style:normal;font-weight:700}
+
+/* Short screens (sideways phones, very high browser zoom): same pinned-map layout as phones */
+@media (max-height:520px){
+  .map-container{height:60dvh;min-height:190px;max-height:none}
+  body.year-mode .map-container{height:74dvh;max-height:none}
+  .brand p{display:none}
 }

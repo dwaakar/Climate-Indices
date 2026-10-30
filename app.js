@@ -135,8 +135,8 @@ const INDEX_KB = {
 };
 
 const CLUSTER_NAMES = {
-  1: { name: "Cluster 1: High-Mountain Cold & Dry", color: "#3b82f6", desc: "Cool temperatures (TMm ~4.4°C), lower total rainfall (~1,768 mm), and higher cold-spell/compound thermal sensitivity." },
-  2: { name: "Cluster 2: Wet Mid-Hill & Orographic Belt", color: "#10b981", desc: "High annual rainfall (~2,642 mm), frequent heavy rain days (R20mm ~33 days), and temperate climate (TMm ~16.5°C)." },
+  1: { name: "Cluster 1: High-Mountain Cold & Dry", color: "#1e40af", desc: "Cool temperatures (TMm ~4.4°C), lower total rainfall (~1,768 mm), and higher cold-spell/compound thermal sensitivity." },
+  2: { name: "Cluster 2: Wet Mid-Hill & Orographic Belt", color: "#10a37f", desc: "High annual rainfall (~2,642 mm), frequent heavy rain days (R20mm ~33 days), and temperate climate (TMm ~16.5°C)." },
   3: { name: "Cluster 3: Warm Terai & Dry-Spell Prone", color: "#f59e0b", desc: "Warm climate (TMm ~23.6°C), long consecutive dry spells (CDD ~62 days), and high extreme-storm share (R95pTOT ~32.6%)." }
 };
 
@@ -209,7 +209,7 @@ function updateExplainerCard() {
   document.getElementById("natStatStrip").innerHTML =
     `<strong>National Snapshot (753 Palikas):</strong> 30-Yr Mean is <strong>${nationalMeans[activeIndex].toFixed(2)} ${info.unit}</strong>. ` +
     `Statistically significant trend (<em>p &lt; 0.05</em>) in <strong>${totalSig} Palikas</strong> ` +
-    `(<span style="color:#15803d;font-weight:700;">↑ ${sigUp} increasing</span>, <span style="color:#b91c1c;font-weight:700;">↓ ${sigDown} decreasing</span>).`;
+    `(<span style="color:#1b3a9e;font-weight:700;">↑ ${sigUp} increasing</span>, <span style="color:#a14f00;font-weight:700;">↓ ${sigDown} decreasing</span>).`;
 }
 
 function getQuantiles(values, probs) {
@@ -228,19 +228,19 @@ function getFeatureColor(props) {
   }
   const tr = props.trends[activeIndex];
   if (activeMode === "sig") {
-    if (!tr || !tr.sig) return "#e2e8f0";
-    return tr.slope > 0 ? "#16a34a" : "#dc2626";
+    if (!tr || !tr.sig) return "#aab4c1";
+    return tr.slope > 0 ? "#1b3a9e" : "#cc6200";
   }
   if (activeMode === "slope") {
     const s = tr ? tr.slope : 0;
     if (s > 0) {
       const maxPos = Math.max(...geoData.features.map(f => f.properties.trends[activeIndex]?.slope || 0.001), 0.001);
       const ratio = Math.min(Math.abs(s) / (maxPos * 0.65), 1);
-      return interpolateColor("#dcfce7", "#15803d", ratio);
+      return interpolateColor("#8fabe8", "#1b3a9e", ratio);
     } else {
       const minNeg = Math.min(...geoData.features.map(f => f.properties.trends[activeIndex]?.slope || -0.001), -0.001);
       const ratio = Math.min(Math.abs(s) / (Math.abs(minNeg) * 0.65), 1);
-      return interpolateColor("#fee2e2", "#b91c1c", ratio);
+      return interpolateColor("#f5bd68", "#cc6200", ratio);
     }
   }
   // Default: mean
@@ -249,8 +249,8 @@ function getFeatureColor(props) {
   const v = props.means[activeIndex];
   const isTemp = INDEX_KB[activeIndex].cat === "temp" || activeIndex === "CDD";
   const palette = isTemp
-    ? ["#fef08a", "#fdba74", "#f97316", "#dc2626", "#7f1d1d"]
-    : ["#e0f2fe", "#7dd3fc", "#0284c7", "#1d4ed8", "#1e1b4b"];
+    ? ["#ffd24f", "#ec990f", "#cd630b", "#b01d00", "#710014"]
+    : ["#a3e0fe", "#58b5e5", "#008ac3", "#075987", "#002e50"];
   if (v <= q20) return palette[0];
   if (v <= q40) return palette[1];
   if (v <= q60) return palette[2];
@@ -269,33 +269,15 @@ function interpolateColor(hex1, hex2, factor) {
 
 function initMap() {
   map = L.map("map", { preferCanvas: true }).setView([28.25, 84.15], 7);
-  // Basemaps that need no API key. The default is a quiet, label-free light map, so
-  // no place names or borders from the tiles show through the coloured areas.
-  // OpenStreetMap and Terrain are still in the layer switcher; "Place names" is an
-  // optional overlay drawn ABOVE the coloured areas so it stays readable.
-  const noBase = L.layerGroup();
-  const clean = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
-    subdomains: "abcd", maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors &copy; CARTO"
-  });
+  // Basemaps (no API key needed): OpenStreetMap (default) and Terrain only.
   const osm = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19, attribution: "&copy; OpenStreetMap contributors"
   });
   const topo = L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
     maxZoom: 17, attribution: "&copy; OpenStreetMap contributors, SRTM | &copy; OpenTopoMap (CC-BY-SA)"
   });
-  map.createPane("labelsPane");
-  map.getPane("labelsPane").style.zIndex = 650;          // above the coloured areas (overlayPane = 400)
-  map.getPane("labelsPane").style.pointerEvents = "none"; // never blocks hover or clicks
-  const names = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png", {
-    subdomains: "abcd", maxZoom: 19, pane: "labelsPane"
-  });
-  clean.addTo(map);
-  L.control.layers(
-    { "Clean light (default)": clean, "OpenStreetMap": osm, "Terrain (OpenTopoMap)": topo, "No basemap": noBase },
-    { "Place names": names },
-    { position: "topright" }
-  ).addTo(map);
+  osm.addTo(map);
+  L.control.layers({ "OpenStreetMap": osm, "Terrain (OpenTopoMap)": topo }, null, { position: "topright" }).addTo(map);
 
   geojsonLayer = L.geoJSON(geoData, {
     style: styleFeature,
@@ -339,7 +321,7 @@ function styleFeature(feature) {
     weight: isSelected ? 2.8 : (inProv ? 0.6 : 0.2),
     opacity: 1,
     color: isSelected ? "#0f172a" : "#475569",
-    fillOpacity: inProv ? 1.0 : 0.12
+    fillOpacity: inProv ? 0.9 : 0.12
   };
 }
 
@@ -362,25 +344,25 @@ function updateLegend() {
   }
   if (activeMode === "sig") {
     leg.innerHTML = `<div class="legend-title">${info.code} Trend Significance (p &lt; 0.05)</div>
-      <div class="legend-row"><span class="legend-swatch" style="background:#16a34a"></span><span>Significant Increase (p &lt; 0.05)</span></div>
-      <div class="legend-row"><span class="legend-swatch" style="background:#dc2626"></span><span>Significant Decrease (p &lt; 0.05)</span></div>
-      <div class="legend-row"><span class="legend-swatch" style="background:#e2e8f0"></span><span>No Statistically Significant Trend</span></div>`;
+      <div class="legend-row"><span class="legend-swatch" style="background:#1b3a9e"></span><span>Significant Increase (p &lt; 0.05)</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#cc6200"></span><span>Significant Decrease (p &lt; 0.05)</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#aab4c1"></span><span>No Statistically Significant Trend</span></div>`;
     return;
   }
   if (activeMode === "slope") {
     leg.innerHTML = `<div class="legend-title">${info.code} Annual Trend (${info.slopeUnit})</div>
-      <div class="legend-row"><span class="legend-swatch" style="background:#15803d"></span><span>Strong Increasing Trend</span></div>
-      <div class="legend-row"><span class="legend-swatch" style="background:#dcfce7"></span><span>Mild Increasing Trend</span></div>
-      <div class="legend-row"><span class="legend-swatch" style="background:#fee2e2"></span><span>Mild Decreasing Trend</span></div>
-      <div class="legend-row"><span class="legend-swatch" style="background:#b91c1c"></span><span>Strong Decreasing Trend</span></div>`;
+      <div class="legend-row"><span class="legend-swatch" style="background:#1b3a9e"></span><span>Strong Increasing Trend</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#8fabe8"></span><span>Mild Increasing Trend</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#f5bd68"></span><span>Mild Decreasing Trend</span></div>
+      <div class="legend-row"><span class="legend-swatch" style="background:#cc6200"></span><span>Strong Decreasing Trend</span></div>`;
     return;
   }
   const allVals = geoData.features.map(f => f.properties.means[activeIndex]);
   const [q20, q40, q60, q80] = getQuantiles(allVals, [0.2, 0.4, 0.6, 0.8]);
   const isTemp = info.cat === "temp" || activeIndex === "CDD";
   const palette = isTemp
-    ? ["#fef08a", "#fdba74", "#f97316", "#dc2626", "#7f1d1d"]
-    : ["#e0f2fe", "#7dd3fc", "#0284c7", "#1d4ed8", "#1e1b4b"];
+    ? ["#ffd24f", "#ec990f", "#cd630b", "#b01d00", "#710014"]
+    : ["#a3e0fe", "#58b5e5", "#008ac3", "#075987", "#002e50"];
   leg.innerHTML = `<div class="legend-title">${info.code} 30-Yr Mean (${info.unit})</div>
     <div class="legend-row"><span class="legend-swatch" style="background:${palette[0]}"></span><span>&le; ${q20.toFixed(1)} (Lowest 20%)</span></div>
     <div class="legend-row"><span class="legend-swatch" style="background:${palette[1]}"></span><span>${q20.toFixed(1)} – ${q40.toFixed(1)}</span></div>
@@ -402,7 +384,7 @@ function selectPalika(pid, zoomTo = false) {
   const clEl = document.getElementById("inspCluster");
   clEl.textContent = clInfo ? clInfo.name : `Cluster ${p.km_cluster}`;
   clEl.style.background = clInfo ? clInfo.color + "22" : "#ede9fe";
-  clEl.style.color = clInfo ? clInfo.color : "#5b21b6";
+  clEl.style.color = clInfo ? interpolateColor(clInfo.color, "#000000", 0.45) : "#5b21b6";
 
   document.getElementById("inspName").textContent = `${p.name} (${p.district})`;
   document.getElementById("inspSub").textContent = `${p.prov_name} • Code: ${p.id} • Area: ${p.area} km²`;
@@ -431,7 +413,7 @@ function selectPalika(pid, zoomTo = false) {
   const sigEl = document.getElementById("kpiSig");
   if (tr.sig) {
     sigEl.textContent = tr.slope >= 0 ? "↑ Significant Rise" : "↓ Significant Drop";
-    sigEl.style.color = tr.slope >= 0 ? "#15803d" : "#b91c1c";
+    sigEl.style.color = tr.slope >= 0 ? "#1b3a9e" : "#a14f00";
   } else {
     sigEl.textContent = "Not Significant";
     sigEl.style.color = "#475569";
@@ -715,6 +697,6 @@ selectPalika = function (id, zoomTo) {
 };
 window.addEventListener("DOMContentLoaded", () => {
   initApp();
-  if (window.innerWidth < 760) map.setView([28.3, 84.1], 6);
+  if (window.matchMedia("(max-width:760px), (max-height:520px)").matches) map.setView([28.3, 84.1], 6);
   document.getElementById("closeInspector").onclick = () => document.body.classList.remove("inspector-open");
 });

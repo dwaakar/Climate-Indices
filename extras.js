@@ -2,6 +2,7 @@
    Layered on top of app.js; relies on its globals (geoData, tsData, geojsonLayer, map, INDEX_KB ...). */
 (function () {
   "use strict";
+  const isCompact = () => matchMedia("(max-width:760px), (max-height:520px)").matches;
   const $ = id => document.getElementById(id);
   const feats = geoData.features;
   const AB = window.ADMIN_BOUNDS || { districts: { features: [] }, provinces: { features: [] } };
@@ -14,7 +15,8 @@
     (dists[p.district] = dists[p.district] || { name: p.district, prov: p.prov_id, ids: [] }).ids.push(p.id);
   });
   const S = { lvl: "nation", prov: null, dist: null, pal: null };
-  const COLORS = ["#1b6b8a", "#d97706", "#7c3aed", "#059669", "#db2777"];
+  const COLORS = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#56B4E9"];   // colour-blind safe
+  const DASHES = [[], [9, 4], [2, 3], [11, 3, 2, 3], [15, 4]];            // line styles help when colours look alike
   let cmp = [], cmpIdx = null, distOutline, provOutline;
 
   /* ---------- helpers ---------- */
@@ -81,7 +83,7 @@
   function fit(pred, maxZoom, drawer) {
     const b = boundsOf(pred);
     if (!b) return;
-    map.fitBounds(b, { paddingTopLeft: [30, 30], paddingBottomRight: [drawer && innerWidth > 760 ? 450 : 30, 30], maxZoom: maxZoom || 12 });
+    map.fitBounds(b, { paddingTopLeft: [30, 30], paddingBottomRight: [drawer && !isCompact() ? 450 : 30, 30], maxZoom: maxZoom || 12 });
   }
   const origSelect = selectPalika;
   const hint = { nation: "Click any area to zoom into its province.", province: "Click an area to zoom into its district.", district: "Click a local level to see its 30-year climate story.", palika: "" };
@@ -310,7 +312,7 @@
     chips.textContent = ""; body.textContent = "";
     cmp.forEach((id, i) => {
       const p = byId[id].properties, c = el("span", "chip");
-      const dot = el("i"); dot.style.background = COLORS[i];
+      const dot = el("i"); dot.style.background = COLORS[i]; dot.textContent = i + 1;
       const x = el("button", "", "✕"); x.setAttribute("aria-label", "Remove " + p.name); x.onclick = () => toggleCmp(id);
       c.append(dot, document.createTextNode(p.name + " (" + dname(p.district) + ")"), x); chips.appendChild(c);
     });
@@ -341,7 +343,7 @@
     const c = cv.getContext("2d"); c.scale(dpr, dpr); c.clearRect(0, 0, W, H);
     const yrs = tsData.years, series = cmp.map(id => tsData.palika_timeseries[id][idx]);
     const all = series.flat(), lo = Math.min(...all), hi = Math.max(...all), pad = (hi - lo) * 0.08 || 1;
-    const L0 = 52, R0 = W - 14, T0 = 14, B0 = H - 28, mn = lo - pad, mx = hi + pad;
+    const L0 = 52, R0 = W - 24, T0 = 14, B0 = H - 28, mn = lo - pad, mx = hi + pad;
     const X = i => L0 + (i / (yrs.length - 1)) * (R0 - L0), Y = v => B0 - ((v - mn) / (mx - mn)) * (B0 - T0);
     c.font = "11px sans-serif"; c.fillStyle = "#475569"; c.strokeStyle = "#e2e8f0"; c.lineWidth = 1;
     for (let g = 0; g <= 4; g++) {
@@ -351,8 +353,9 @@
     c.textAlign = "center";
     yrs.forEach((y, i) => { if (i % 5 === 0 || i === yrs.length - 1) c.fillText(y, X(i), H - 8); });
     series.forEach((s, k) => {
-      c.strokeStyle = COLORS[k]; c.lineWidth = 2.2; c.beginPath();
-      s.forEach((v, i) => (i ? c.lineTo(X(i), Y(v)) : c.moveTo(X(i), Y(v)))); c.stroke();
+      c.strokeStyle = COLORS[k]; c.lineWidth = 2.4; c.setLineDash(DASHES[k]); c.beginPath();
+      s.forEach((v, i) => (i ? c.lineTo(X(i), Y(v)) : c.moveTo(X(i), Y(v)))); c.stroke(); c.setLineDash([]);
+      c.fillStyle = COLORS[k]; c.textAlign = "left"; c.font = "bold 12px sans-serif"; c.fillText(String(k + 1), Math.min(R0 + 2, W - 10), Y(s[s.length - 1]) + 4);
     });
   }
   function openCmp() {
@@ -397,7 +400,7 @@
     const lg = $("mapLegend");
     // legend: tap its title to collapse/expand; starts collapsed on small screens so it never hides the map
     const leg = $("mapLegend");
-    if (innerWidth < 760) leg.classList.add("collapsed");
+    if (isCompact()) leg.classList.add("collapsed");
     leg.addEventListener("click", e => { if (e.target.closest(".legend-title")) leg.classList.toggle("collapsed"); });
     fitNepal();
     if (window.ResizeObserver) { let ro; new ResizeObserver(() => { clearTimeout(ro); ro = setTimeout(() => { map.invalidateSize(); window.__refitIfNation(); }, 120); }).observe($("map")); }

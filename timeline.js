@@ -4,8 +4,8 @@
   "use strict";
   const $ = id => document.getElementById(id);
   const feats = geoData.features, N = tsData.years.length, Y0 = tsData.years[0];
-  const PAL_RAIN = ["#e0f2fe", "#7dd3fc", "#0284c7", "#1d4ed8", "#1e1b4b"];   // same palettes as the other modes
-  const PAL_TEMP = ["#fef08a", "#fdba74", "#f97316", "#dc2626", "#7f1d1d"];
+  const PAL_RAIN = ["#a3e0fe", "#58b5e5", "#008ac3", "#075987", "#002e50"];   // same palettes as the other modes
+  const PAL_TEMP = ["#ffd24f", "#ec990f", "#cd630b", "#b01d00", "#710014"];
   let pos = 0, playing = false, raf = 0, lastT = 0, lastPaint = 0;
   const cache = {};
 
